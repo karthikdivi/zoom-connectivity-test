@@ -1,0 +1,53 @@
+<html>
+<body>
+    <div id="result">Testing zoom connectivity</div>
+
+    <script>
+        async function canConnect(host) {
+            const DUMMY_PATH = "/foo.png";
+            console.log('canConnect:', host);
+            try {
+                let res = await fetch(host + DUMMY_PATH);
+                let code = await res.status;
+                return code;
+            } catch (e) {
+                console.log('canConnect error', e);
+                return 0;
+            }
+        }
+
+        async function testZoomConnectivity() {
+            const HOSTS = [
+                'https://st1.zoom.us/static/6.0.5239/image/new/ZoomLogo.png',
+                'https://source.zoom.us',
+                'https://rwcsc.sc.zoom.us',
+                'https://rwcty.ty.zoom.us',
+                'https://rwcdv.dv.zoom.us',
+                'https://rwcfr.fr.zoom.us',
+                'https://rwcvn.vn.zoom.us',
+                'https://rwctr.tr.zoom.us',
+                'https://rwcny.ny.zoom.us',
+                'https://rwcmb.cloud.zoom.us',
+                'https://rwcsy.sy.zoom.us',
+                'https://rwchy.hy.zoom.us/',
+                'https://rwcam.am.zoom.us/',
+                'https://rwcmb.cloud.zoom.us/',
+            ];
+            console.log('tesrting zoom connectivity');
+            let blockedCounter = 0;
+            let counter = 0;
+            for (let host of HOSTS) {
+                document.getElementById("result").innerText = `Testing zoom connectivity. progress: ${++counter}/${HOSTS.length}`;
+                let code = await canConnect(host);
+                if (code === 0) {
+                    blockedCounter++;
+                }
+            }
+            let connectivityPercentage = ((HOSTS.length - blockedCounter) / HOSTS.length) * 100;
+            console.log('connectivityPercentage:' + connectivityPercentage);
+            document.getElementById("result").innerText = `Zoom connectivity: ${connectivityPercentage}%`;
+        }
+        testZoomConnectivity();
+    </script>
+</body>
+</html>
