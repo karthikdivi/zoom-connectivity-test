@@ -3,53 +3,70 @@
 <body>
     <div id="result">Testing zoom connectivity</div>
 
-    <script>
-        async function canConnect(host) {
-            // console.log('canConnect:', host);
-            try {
-                let res = await fetch(host);
-                let code = await res.status;
-                return code;
-            } catch (e) {
-                // console.log('canConnect error', e);
-                return 0;
-            }
-        }
+    <div id="success" style="display:none">
+        <p>There are no issues with Zoom connectivity in your network.</p>
+    </div>
 
-        async function testZoomConnectivity() {
-            const HOSTS = {
-                'https://st1.zoom.us/static/6.0.5239/image/new/ZoomLogo.png': 200,
-                'https://source.zoom.us/foo.png': 403,
-                'https://rwcsc.sc.zoom.us/foo.png': 404,
-                'https://rwcty.ty.zoom.us/foo.png': 404,
-                'https://rwcdv.dv.zoom.us/foo.png': 404,
-                'https://rwcfr.fr.zoom.us/foo.png': 404,
-                'https://rwcvn.vn.zoom.us/foo.png': 404,
-                'https://rwctr.tr.zoom.us/foo.png': 404,
-                'https://rwcny.ny.zoom.us/foo.png': 404,
-                'https://rwcmb.cloud.zoom.us/foo.png': 404,
-                'https://rwcsy.sy.zoom.us/foo.png': 404,
-                'https://rwchy.hy.zoom.us/foo.png': 404,
-                'https://rwcam.am.zoom.us/foo.png': 404,
-                'https://rwcmb.cloud.zoom.us/foo.png': 404,
-            };
-            let TOTAL_TESTS = Object.keys(HOSTS).length;
-            console.log('testing zoom connectivity');
-            let blockedCounter = 0;
-            let counter = 0;
-            for (let [host, expectedStatusCode] of Object.entries(HOSTS)) {
-                document.getElementById("result").innerText = `Testing zoom connectivity. progress: ${++counter}/${TOTAL_TESTS}`;
-                let code = await canConnect(host);
-                if (code !== expectedStatusCode) {
-                    blockedCounter++;
+    <div id="failed" style="display:none">
+        <p>Issues detected with Zoom connectivity, please make sure you have safe-listed following domains</p>
+        <pre>
+    zoom.us
+    *.zoom.us
+    *.*.zoom.us
+        </pre>
+        <script>
+            async function canConnect(host) {
+                // console.log('canConnect:', host);
+                try {
+                    let res = await fetch(host);
+                    let code = await res.status;
+                    return code;
+                } catch (e) {
+                    // console.log('canConnect error', e);
+                    return 0;
                 }
             }
-            let connectivityPercentage = Math.floor(((TOTAL_TESTS - blockedCounter) / TOTAL_TESTS) * 100);
-            console.log('connectivityPercentage:' + connectivityPercentage);
-            document.getElementById("result").innerText = `Zoom connectivity: ${connectivityPercentage}%`;
-        }
-        testZoomConnectivity();
-    </script>
+
+            async function testZoomConnectivity() {
+                const HOSTS = {
+                    'https://st1.zoom.us/static/6.0.5239/image/new/ZoomLogo.png': 200,
+                    'https://source.zoom.us/foo.png': 403,
+                    'https://rwcsc.sc.zoom.us/foo.png': 404,
+                    'https://rwcty.ty.zoom.us/foo.png': 404,
+                    'https://rwcdv.dv.zoom.us/foo.png': 404,
+                    'https://rwcfr.fr.zoom.us/foo.png': 404,
+                    'https://rwcvn.vn.zoom.us/foo.png': 404,
+                    'https://rwctr.tr.zoom.us/foo.png': 404,
+                    'https://rwcny.ny.zoom.us/foo.png': 404,
+                    'https://rwcmb.cloud.zoom.us/foo.png': 404,
+                    'https://rwcsy.sy.zoom.us/foo.png': 404,
+                    'https://rwchy.hy.zoom.us/foo.png': 404,
+                    'https://rwcam.am.zoom.us/foo.png': 404,
+                    'https://rwcmb.cloud.zoom.us/foo.png': 404,
+                };
+                let TOTAL_TESTS = Object.keys(HOSTS).length;
+                console.log('testing zoom connectivity');
+                let blockedCounter = 0;
+                let counter = 0;
+                for (let [host, expectedStatusCode] of Object.entries(HOSTS)) {
+                    document.getElementById("result").innerText = `Testing zoom connectivity. progress: ${++counter}/${TOTAL_TESTS}`;
+                    let code = await canConnect(host);
+                    if (code !== expectedStatusCode) {
+                        blockedCounter++;
+                    }
+                }
+                let connectivityPercentage = Math.floor(((TOTAL_TESTS - blockedCounter) / TOTAL_TESTS) * 100);
+                console.log('connectivityPercentage:' + connectivityPercentage);
+                document.getElementById("result").innerText = `Zoom connectivity: ${connectivityPercentage}%`;
+                if (connectivityPercentage == 100) {
+                    document.getElementById('success').style.display = 'block';
+                } else {
+                    document.getElementById('failed').style.display = 'block';
+                }
+
+            }
+            testZoomConnectivity();
+        </script>
 </body>
 
 </html>
